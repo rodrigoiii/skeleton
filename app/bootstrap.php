@@ -16,6 +16,7 @@ $app = new Core\App;
 $app->loadDatabaseConnection();
 
 # load libraries
+require core_path("libraries/validator.php");
 
 # load middlewares
 
