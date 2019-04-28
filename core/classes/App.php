@@ -47,6 +47,7 @@ class App extends SlimApp
         $this->pushViewDefinition($this->definitions);
         $this->pushControllersDefinition($this->definitions);
         $this->pushMiddlewaresDefinition($this->definitions);
+        $this->pushRequestsDefinition($this->definitions);
 
         $builder->addDefinitions(array_merge($this->definitions, $this->custom_definitions));
     }
@@ -186,6 +187,45 @@ class App extends SlimApp
                 else
                 {
                     $errors[] = "{$middleware} is already exist inside of definitions.";
+                }
+            }
+
+            if (!empty($errors))
+            {
+                exit("Error: Please fix the ff. before run the application: <li>" . implode("</li><li>", $errors));
+            }
+        }
+    }
+
+    private function pushRequestsDefinition(array &$definitions)
+    {
+        $requests_directory = app_path("src/Requests");
+
+        $request_files = get_files($requests_directory);
+
+        if (!empty($request_files))
+        {
+            $requests = array_map(function($request) use($requests_directory) {
+                $new_request = str_replace("{$requests_directory}/", "", $request);
+                return basename(str_replace("/", "\\", $new_request), ".php");
+            }, $request_files);
+
+            $errors = [];
+
+            foreach ($requests as $request)
+            {
+                $request_definition = get_app_namespace() . "Requests\\{$request}";
+
+                if (!array_key_exists($request_definition, $definitions))
+                {
+                    $definitions[$request_definition] = function(ContainerInterface $c) use($request_definition)
+                    {
+                        return new $request_definition($c->get('request'));
+                    };
+                }
+                else
+                {
+                    $errors[] = "{$request} is already exist inside of definitions.";
                 }
             }
 
