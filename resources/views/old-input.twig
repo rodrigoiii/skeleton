@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Old Input</title>
+</head>
+<body>
+    {{ old_input | json_encode }}
+
+    <form method="POST" action="/">
+        <input type="text" name="field" />
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 # create environment
 $dotEnv = Core\App::createEnvironment();
 $dotEnv->overload();
@@ -18,6 +20,7 @@ $app->loadDatabaseConnection();
 # load libraries
 
 # load middlewares
+$app->add("Core\\OldInputMiddleware");
 
 # routes
 require app_path("routes.php");
