@@ -2,6 +2,10 @@
 
 namespace Core;
 
+use Core\ErrorHandlers\ErrorHandler;
+use Core\ErrorHandlers\NotAllowedHandler;
+use Core\ErrorHandlers\NotFoundHandler;
+use Core\ErrorHandlers\PhpErrorHandler;
 use DI\Bridge\Slim\App as SlimApp;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
@@ -10,10 +14,7 @@ use Dotenv\Environment\DotenvFactory;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Database\Capsule\Manager;
 use Psr\Container\ContainerInterface;
-use Core\ErrorHandlers\ErrorHandler;
-use Core\ErrorHandlers\NotAllowedHandler;
-use Core\ErrorHandlers\NotFoundHandler;
-use Core\ErrorHandlers\PhpErrorHandler;
+use Slim\Csrf\Guard;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 
@@ -46,7 +47,9 @@ class App extends SlimApp
         $this->pushErrorHandlersDefinition($this->definitions);
         $this->pushViewDefinition($this->definitions);
         $this->pushControllersDefinition($this->definitions);
+        $this->pushCoreMiddlewaresDefinition($this->definitions);
         $this->pushMiddlewaresDefinition($this->definitions);
+        $this->pushCsrfDefinition($this->definitions);
 
         $builder->addDefinitions(array_merge($this->definitions, $this->custom_definitions));
     }
@@ -156,6 +159,46 @@ class App extends SlimApp
         }
     }
 
+    private function pushCoreMiddlewaresDefinition(array &$definitions)
+    {
+        $middlewares_directory = core_path("classes/Middlewares");
+
+        $middleware_files = get_files($middlewares_directory);
+
+        if (!empty($middleware_files))
+        {
+            $middlewares = array_map(function($middleware) use($middlewares_directory) {
+                $new_middleware = str_replace("{$middlewares_directory}/", "", $middleware);
+                return basename(str_replace("/", "\\", $new_middleware), ".php");
+            }, $middleware_files);
+
+            $errors = [];
+
+            foreach ($middlewares as $middleware)
+            {
+                $middleware_definition = "Core\\{$middleware}";
+                $middleware_definition_value = "Core\\Middlewares\\{$middleware}";
+
+                if (!array_key_exists($middleware_definition, $definitions))
+                {
+                    $definitions[$middleware_definition] = function(ContainerInterface $c) use ($middleware_definition_value)
+                    {
+                        return new $middleware_definition_value($c);
+                    };
+                }
+                else
+                {
+                    $errors[] = "{$middleware} is already exist inside of definitions.";
+                }
+            }
+
+            if (!empty($errors))
+            {
+                exit("Error: Please fix the ff. before run the application: <li>" . implode("</li><li>", $errors));
+            }
+        }
+    }
+
     private function pushMiddlewaresDefinition(array &$definitions)
     {
         $middlewares_directory = app_path("src/Middlewares");
@@ -194,6 +237,29 @@ class App extends SlimApp
                 exit("Error: Please fix the ff. before run the application: <li>" . implode("</li><li>", $errors));
             }
         }
+    }
+
+    private function pushCsrfDefinition(array &$definitions)
+    {
+        # slim/csrf
+        $definitions['csrf'] = function(Twig $view)
+        {
+            $guard = new Guard;
+            $guard->setFailureCallable(function($request, $response, $next) use($view) {
+                if (is_prod())
+                {
+                    return $view->render(
+                        $response->withStatus(403)->withHeader('Content-Type', "text/html"),
+                        config('twig-view.error_pages.403')
+                    );
+                }
+
+                return $response->withStatus(403)
+                                ->withHeader('Content-Type', "text/html")
+                                ->write("Failed CSRF check!");
+            });
+            return $guard;
+        };
     }
 
     public function loadDatabaseConnection($is_query_log_enabled = false)

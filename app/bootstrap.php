@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 # create environment
 $dotEnv = Core\App::createEnvironment();
 $dotEnv->overload();
@@ -13,11 +15,15 @@ $dotEnv->required("DB_NAME");
 
 # application instance
 $app = new Core\App;
+$container = $app->getContainer();
+
 $app->loadDatabaseConnection();
 
 # load libraries
 
 # load middlewares
+$app->add("Core\\GlobalCsrfMiddleware");
+$app->add($container->get('csrf'));
 
 # routes
 require app_path("routes.php");
