@@ -33,7 +33,8 @@ class App extends SlimApp
     {
         $this->definitions = [
             'settings.displayErrorDetails' => config('app.debug'),
-            'settings.database' => config('database')
+            'settings.database' => config('database'),
+            'settings.tracy' => config("debugbar")
         ];
 
         $this->custom_definitions = $custom_definitions;
@@ -47,6 +48,7 @@ class App extends SlimApp
         $this->pushViewDefinition($this->definitions);
         $this->pushControllersDefinition($this->definitions);
         $this->pushMiddlewaresDefinition($this->definitions);
+        $this->pushTwigProfile($this->definitions);
 
         $builder->addDefinitions(array_merge($this->definitions, $this->custom_definitions));
     }
@@ -194,6 +196,15 @@ class App extends SlimApp
                 exit("Error: Please fix the ff. before run the application: <li>" . implode("</li><li>", $errors));
             }
         }
+    }
+
+    private function pushTwigProfile(array &$definitions)
+    {
+        # tracy debug bar need this
+        $definitions['twig_profile'] = function()
+        {
+            return new \Twig_Profiler_Profile;
+        };
     }
 
     public function loadDatabaseConnection($is_query_log_enabled = false)
