@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Data Table</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap.min.css" />
 </head>
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1 class="page-header">Model list</h1>
+                <h1 class="page-header">User list</h1>
 
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered table-striped" id="model-table">
+                    <table class="table table-hover table-bordered table-striped" id="user-table">
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>Column1</th>
-                                <th>Actions</th>
+                                <th>Name</th>
+                                <th>Email</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,34 +29,28 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/dataTable.pipeline.js"></script>
 
     <script type="text/javascript">
     $(document).ready(function() {
-        $('#model-table').DataTable({
+        $('#user-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: {
-                url: "/data"
-            },
+            ajax: $.fn.dataTable.pipeline({
+                url: "/data",
+                pages: 2
+            }),
             columns: [
                 {data: "id"},
-                {data: "column1"},
                 {
-                    orderable: false,
-                    data: function (row, type, set) {
-                        var id = row.id;
-
-                        var tmpl = _.template($('#action-tmpl').html());
-
-                        return tmpl({
-                            view_url: "/models/" + id + "/show",
-                            edit_url: "/models/" + id + "/edit",
-                            delete_url: "/models/" + id + "/delete",
-                        });
+                    data: function(row) {
+                        return row.first_name + " " + row.last_name;
                     }
-                }
+                },
+                {data: "email"}
             ]
         });
     });
