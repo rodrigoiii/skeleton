@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Table</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="page-header">Model list</h1>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered table-striped" id="model-table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Column1</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#model-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "/data"
+            },
+            columns: [
+                {data: "id"},
+                {data: "column1"},
+                {
+                    orderable: false,
+                    data: function (row, type, set) {
+                        var id = row.id;
+
+                        var tmpl = _.template($('#action-tmpl').html());
+
+                        return tmpl({
+                            view_url: "/models/" + id + "/show",
+                            edit_url: "/models/" + id + "/edit",
+                            delete_url: "/models/" + id + "/delete",
+                        });
+                    }
+                }
+            ]
+        });
+    });
+    </script>
+</body>
+</html>
