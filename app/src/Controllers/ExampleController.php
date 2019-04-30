@@ -10,14 +10,14 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class ExampleController extends BaseController
 {
     /**
-     * Display home page
+     * Display sample page
      *
      * @param  ResponseInterface $response
      * @return ResponseInterface
      */
     public function index(Response $response)
     {
-        return $this->view->render($response, "home.twig");
+        return $this->view->render($response, "sample.twig");
     }
 
     /**

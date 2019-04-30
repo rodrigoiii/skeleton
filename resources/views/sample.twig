@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sample</title>
+</head>
+<body>
+    {{ errors | json_encode }}
+
+    <form method="POST" action="/">
+        <input type="test" name="fname" /> <br>
+        <input type="test" name="lname" /> <br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

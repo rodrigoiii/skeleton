@@ -15,7 +15,8 @@ class ExampleRequest extends BaseRequest
     public function rules()
     {
         return [
-            'test' => v::test()
+            'fname' => v::notEmpty(),
+            'lname' => v::notEmpty()->length(5)
         ];
     }
 }
