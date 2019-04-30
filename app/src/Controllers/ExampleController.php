@@ -16,6 +16,12 @@ class ExampleController extends BaseController
      */
     public function index(Response $response)
     {
-        return $this->view->render($response, "home.twig");
+        return $this->view->render($response, "flash.twig");
+    }
+
+    public function post(Response $response)
+    {
+        $this->flash->addMessage('pizza', "Delisyoso!");
+        return $response->withRedirect("/");
     }
 }

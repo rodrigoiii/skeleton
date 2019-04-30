@@ -2,6 +2,10 @@
 
 namespace Core;
 
+use Core\ErrorHandlers\ErrorHandler;
+use Core\ErrorHandlers\NotAllowedHandler;
+use Core\ErrorHandlers\NotFoundHandler;
+use Core\ErrorHandlers\PhpErrorHandler;
 use DI\Bridge\Slim\App as SlimApp;
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
@@ -10,10 +14,7 @@ use Dotenv\Environment\DotenvFactory;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Database\Capsule\Manager;
 use Psr\Container\ContainerInterface;
-use Core\ErrorHandlers\ErrorHandler;
-use Core\ErrorHandlers\NotAllowedHandler;
-use Core\ErrorHandlers\NotFoundHandler;
-use Core\ErrorHandlers\PhpErrorHandler;
+use Slim\Flash\Messages;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension;
 
@@ -47,6 +48,7 @@ class App extends SlimApp
         $this->pushViewDefinition($this->definitions);
         $this->pushControllersDefinition($this->definitions);
         $this->pushMiddlewaresDefinition($this->definitions);
+        $this->pushFlashDefinition($this->definitions);
 
         $builder->addDefinitions(array_merge($this->definitions, $this->custom_definitions));
     }
@@ -105,6 +107,9 @@ class App extends SlimApp
                     $view->getEnvironment()->addFunction(new \Twig_SimpleFunction($function, $function));
                 }
             }
+
+            # Make 'flash' global
+            $view->getEnvironment()->addGlobal('flash', $c->get('flash'));
 
             return $view;
         };
@@ -194,6 +199,14 @@ class App extends SlimApp
                 exit("Error: Please fix the ff. before run the application: <li>" . implode("</li><li>", $errors));
             }
         }
+    }
+
+    private function pushFlashDefinition(array &$definitions)
+    {
+        $definitions['flash'] = function()
+        {
+            return new Messages;
+        };
     }
 
     public function loadDatabaseConnection($is_query_log_enabled = false)

@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 # create environment
 $dotEnv = Core\App::createEnvironment();
 $dotEnv->overload();
