@@ -1,5 +1,6 @@
-/vendor
 /.env
+/phinx.yml
 /storage/logs/*
+/vendor
 
 !.gitignore
