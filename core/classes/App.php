@@ -89,7 +89,9 @@ class App extends SlimApp
         # twig view
         $definitions['view'] = function(ContainerInterface $c)
         {
-            $path = resources_path("views");
+            $use_dist = filter_var(config("app.use_dist"), FILTER_VALIDATE_BOOLEAN);
+
+            $path = resources_path($use_dist ? "dist-views" : "views");
             $config = config("view");
             $settings = array_key_exists('settings', $config) ? $config['settings'] : [];
 

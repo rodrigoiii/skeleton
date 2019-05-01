@@ -1,0 +1,31 @@
+{
+  "name": "slim-project",
+  "version": "1.0.0",
+  "description": "Skeleton is a model view controller(mvc) pattern built on slim3.",
+  "scripts": {
+    "dev": "node node_modules/.bin/sponge scripts && node node_modules/.bin/sponge sass",
+    "watch": "node node_modules/.bin/sponge watch",
+    "build": "node node_modules/.bin/sponge build",
+    "unbuild": "node node_modules/.bin/sponge unbuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rodrigoiii/skeleton.git"
+  },
+  "keywords": [
+    "micro framework",
+    "skeleton",
+    "slim",
+    "php"
+  ],
+  "author": "rodrigogalura3rd@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rodrigoiii/skeleton/issues"
+  },
+  "homepage": "https://github.com/rodrigoiii/skeleton#readme",
+  "devDependencies": {
+    "sponge-rod": "^3.10.1"
+  },
+  "dependencies": {}
+}
