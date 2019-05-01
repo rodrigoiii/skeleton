@@ -107,6 +107,17 @@ class App extends SlimApp
                 }
             }
 
+            $errors = null;
+            if (isset($_SESSION['errors']))
+            {
+                $session_value = $_SESSION['errors'];
+                unset($_SESSION['errors']);
+
+                $errors = $session_value;
+            }
+
+            $view->getEnvironment()->addGlobal('errors', $errors);
+
             return $view;
         };
 
