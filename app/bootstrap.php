@@ -19,7 +19,7 @@ $app->loadDatabaseConnection();
 # load libraries
 
 # load middlewares
-$app->add(Core\AppStatusUpMiddleware::class);
+$app->add("Core\\AppStatusUpMiddleware");
 
 # routes
 require app_path("routes.php");
