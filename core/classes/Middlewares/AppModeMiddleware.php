@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Core\BaseMiddleware;
 
-class AppStatusUpMiddleware extends BaseMiddleware
+class AppModeMiddleware extends BaseMiddleware
 {
     /**
      * Show under maintenance page if the web mode is DOWN.
@@ -18,9 +18,9 @@ class AppStatusUpMiddleware extends BaseMiddleware
      */
     public function __invoke(Request $request, Response $response, callable $next)
     {
-        $is_up = config("app.status_up");
+        $is_down = config("app.mode") === "down";
 
-        if (!$is_up)
+        if ($is_down)
         {
             return $this->view->render(
                         $response->withStatus(200)
