@@ -16,6 +16,7 @@ class ExampleController extends BaseController
      */
     public function index(Response $response)
     {
+        queue_job("SampleJob");
         return $this->view->render($response, "home.twig");
     }
 }

@@ -6,13 +6,12 @@
 2. [Twig](https://twig.symfony.com/)
 3. [Phinx](https://phinx.org/)
 
-## Implementation of useful libraries
+## Queue Job.
 
-1. Console Command
-2. Log
-3. Validation
-4. Under maintenance mode
-5. Cross Site Request Forge (csrf)
-6. Old input
-7. Debugbar
-8. Flash Message
+Don't let your visitor wait to finish the process of your application.
+The goal of this library is to ease the loading process.
+Just create the job and let it do that for you.
+
+## Requirements
+
+Important to know that you need to install `beanstalkd` in your local machine. Just search it to install in your own machine.

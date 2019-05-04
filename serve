@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+use Core\QueueJob\Worker;
+use Pheanstalk\Pheanstalk;
+
+// composer autoload
+require __DIR__ . "/vendor/autoload.php";
+
+$dotEnv = Core\App::createEnvironment();
+$dotEnv->overload();
+
+$host = config('queue-job.host');
+
+// Instantiate your worker and put the ip of your host as argument like the example below.
+$worker = new Worker(new Pheanstalk($host));
+
+// Listening on SampleJob job.
+$worker->listen(["SampleJob"]);
