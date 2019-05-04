@@ -32,14 +32,9 @@ class App extends SlimApp
     public function __construct(array $custom_definitions = [])
     {
         $this->definitions = [
-<<<<<<< HEAD
-            'settings.displayErrorDetails' => config('app.debug'),
-            'settings.database' => config('database'),
-            'settings.tracy' => config("debugbar")
-=======
             'settings.displayErrorDetails' => config("app.debug"),
-            'settings.database' => config("database")
->>>>>>> develop
+            'settings.database' => config("database"),
+            'settings.tracy' => config("debugbar")
         ];
 
         $this->custom_definitions = $custom_definitions;
