@@ -10,6 +10,7 @@ $dotEnv->required("DB_PORT")->isInteger();
 $dotEnv->required("DB_USERNAME");
 $dotEnv->required("DB_PASSWORD");
 $dotEnv->required("DB_NAME");
+
 $dotEnv->required("DEBUG_BAR_ON");
 
 # application instance
