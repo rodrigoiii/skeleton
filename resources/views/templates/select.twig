@@ -1,5 +1,6 @@
 {% set field_text = (field_text is defined ? field_text : str_title(field_name)) %}
 {% set field_values = (field_values is defined ? field_values : []) %}
+{% set selected = (selected is defined ? selected : (field_values | first)) %}
 {% set enabled_error = (enabled_error is defined ? enabled_error : true) %}
 {% set enabled_success = (enabled_success is defined ? enabled_success : true) %}
 {% set enabled_old_input = (enabled_old_input is defined ? enabled_old_input : true) %}
@@ -12,7 +13,9 @@
 
     <select name="{{ field_name }}" class="form-control {{ input_class }}">
         {% for value, text in field_values %}
-            <option value="{{ value }}" {{ old_input[field_name] ? (enabled_old_input ? (old_input[field_name] == value ? "selected") : '') }}>{{ text }}</option>
+            {% set valueToBeCompare = old_input[field_name] ? old_input[field_name] : selected %}
+
+            <option value="{{ value }}" {{ valueToBeCompare == value ? "selected" }} >{{ text }}</option>
         {% endfor %}
     </select>
 
