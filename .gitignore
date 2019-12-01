@@ -7,7 +7,7 @@
 /public/css
 /public/js
 
-/storage/logs/*
+/storage/logs/*.log
 
 /public/dist
 /resources/dist-views
